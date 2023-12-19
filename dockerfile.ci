@@ -1,0 +1,25 @@
+# prepare stage
+ARG PYTHON_BASE_IMAGE
+FROM python:${PYTHON_BASE_IMAGE}
+
+WORKDIR /app
+COPY ./ ./
+
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends gcc
+
+RUN mkdir wheels
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /app/wheels -r requirements.txt
+
+ARG CI_VERSION
+ARG CI_COMMIT_TIMESTAMP
+
+RUN pip install --no-cache /app/wheels/*
+
+LABEL version="${CI_VERSION}"
+LABEL build_date="${CI_COMMIT_TIMESTAMP}"
+
+ENTRYPOINT python telegram_main.py

@@ -1,0 +1,9 @@
+.gitignore
+.env.dev
+docker-compose.yml
+README.md
+
+.git
+.idea
+postgres_data
+redis_data
